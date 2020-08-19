@@ -1,1 +1,3 @@
 *.swp
+chromedriver
+__pycache__/
