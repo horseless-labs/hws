@@ -11,7 +11,7 @@ class ScraperControlPanel(Frame):
 
     def init_window(self):
         self.master.title(self.version)
-
+        self.content.columnconfigure(1, minsize=50)
         self.content.grid(column=0, row=0)
 
         # COLUMN 0
@@ -27,24 +27,25 @@ class ScraperControlPanel(Frame):
         # List of terms neighboring the seed term that were found by the
         # driver
         candidate_terms = Text(self.content, height=25, width=25)
-        candidate_terms.grid(column=0, row=2, padx=10, pady=5, sticky=W)
+        candidate_terms.grid(column=0, row=2, padx=10, pady=10, rowspan=40,
+                sticky=W)
 
         # COLUMN 1
         find_candidates_btn = Button(self.content, text="Find Candidates",
                 width=20)
-        find_candidates_btn.grid(column=1, row=0, padx=10, pady=10, sticky=NE)
+        find_candidates_btn.grid(column=1, row=1, padx=30, pady=10, sticky=NE)
 
         scrape_btn = Button(self.content, text="Scrape Images", width=20)
-        scrape_btn.grid(column=1, row=1, padx=10, pady=5, sticky=N)
+        scrape_btn.grid(column=1, row=4, padx=10, pady=5, sticky=N)
 
         pause_btn = Button(self.content, text="Pause", width=20)
-        pause_btn.grid(column=1, row=2, padx=10, pady=5, sticky=N)
+        pause_btn.grid(column=1, row=5, padx=10, pady=5, sticky=N)
 
         cancel_btn = Button(self.content, text="Cancel", width=20)
-        cancel_btn.grid(column=1, row=3, padx=10, pady=5, sticky=N)
+        cancel_btn.grid(column=1, row=6, padx=10, pady=5, sticky=N)
 
         save_btn = Button(self.content, text="Save", width=20)
-        save_btn.grid(column=1, row=4, padx=10, pady=5, sticky=N)
+        save_btn.grid(column=1, row=7, padx=10, pady=5, sticky=N)
 
 root = Tk()
 app = ScraperControlPanel(root)
