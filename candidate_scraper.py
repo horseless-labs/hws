@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from pathlib import Path
 
 class NeighborNodeFinder:
-    def __init__(self, query:str, wb:webdriver, max_layers:int=2, max_nodes:int=5):
+    def __init__(self, query:str, wd:webdriver, max_layers:int=2, max_nodes:int=5):
         self.search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img"
         self.query = query
         self.wd = wd
@@ -59,8 +59,10 @@ class NeighborNodeFinder:
 
         self.final_node_list = list(next_layer)
 
+"""
 wd = webdriver.Chrome(executable_path="./chromedriver")
 ueg = NeighborNodeFinder("ducks", wd, max_nodes=5, max_layers=1)
 nodes = ueg.final_node_list
 wd.close()
 print(nodes)
+"""
