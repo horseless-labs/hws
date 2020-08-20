@@ -13,16 +13,21 @@ class CandidateScraperGUI(Frame):
 
         # COLUMN 0
         driver = ttk.Entry(self.content, justify=LEFT)
+        driver.insert(0, "./chromedriver")
         driver.grid(column=0, row=0, padx=10, pady=8)
 
         query = ttk.Entry(self.content, justify=LEFT)
         query.grid(column=0, row=1, padx=10, pady=8)
 
         max_layers = ttk.Entry(self.content, justify=LEFT)
+        max_layers.insert(0, 2)
         max_layers.grid(column=0, row=2, padx=10, pady=8)
 
         max_nodes = ttk.Entry(self.content, justify=LEFT)
+        max_nodes.insert(0, 1)
         max_nodes.grid(column=0, row=3, padx=10, pady=8)
+
+        print(type(max_nodes.get()))
 
         # COLUMN 1
         start_btn = Button(self.content, text="Start", width=15)
@@ -34,8 +39,7 @@ class CandidateScraperGUI(Frame):
         cancel_btn = Button(self.content, text="Cancel", width=15)
         cancel_btn.grid(column=1, row=2, padx=10, pady=8)
 
-"""
+
 root = Tk()
 app = CandidateScraperGUI(root)
 root.mainloop()
-"""
