@@ -82,6 +82,8 @@ class CandidateScraperGUI(Frame):
         scraper = cs.NeighborNodeFinder(self.query_text, self.wd, self.max_nodes_text,
                 self.max_layers_text)
 
+"""
 root = Tk()
 app = CandidateScraperGUI(root)
 root.mainloop()
+"""

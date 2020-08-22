@@ -14,12 +14,12 @@ class ThreadManager:
     def __init__(self, master):
         self.master = master
         self.queue = queue
-        self.thread1 = threading.Thread(target=self.download_panel)
-        self.thread1.start()
+        self.dp_thread = threading.Thread(target=self.download_panel)
+        self.dp_thread.start()
 
     def download_panel(self):
-        self.gui = dg.DownloaderGUI(self.master)
+        gui = dg.DownloaderGUI(self.master)
 
 root = Tk()
-app = dg.DownloaderGUI(root)
+tm = ThreadManager(root)
 root.mainloop()

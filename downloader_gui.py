@@ -1,6 +1,7 @@
 # Change this later to only import the widgets needed from tkinter
 from tkinter import *
 from tkinter import ttk
+import threading
 
 import candidate_scraper_gui as csg
 
@@ -34,7 +35,7 @@ class DownloaderGUI(Frame):
 
         # COLUMN 1
         find_candidates_btn = Button(self.content, text="Find Candidates",
-                width=20, command=self.find_candidates)
+                width=20, command=self.start_find_candidates)
         find_candidates_btn.grid(column=1, row=1, padx=30, pady=10, sticky=NE)
 
         scrape_btn = Button(self.content, text="Scrape Images", width=20)
@@ -49,7 +50,17 @@ class DownloaderGUI(Frame):
         save_btn = Button(self.content, text="Save", width=20)
         save_btn.grid(column=1, row=7, padx=10, pady=5, sticky=N)
 
+    def start_find_candidates(self):
+        fc_thread = threading.Thread(target=self.find_candidates)
+        fc_thread.start()
+
     def find_candidates(self):
         csg_root = Tk()
         app = csg.CandidateScraperGUI(csg_root)
         csg_root.mainloop()
+
+"""
+root = Tk()
+app = DownloaderGUI(root)
+root.mainloop()
+"""
