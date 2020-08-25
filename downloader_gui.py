@@ -12,6 +12,9 @@ class DownloaderGUI(Frame):
         self.version = "hws-0.0"
         self.init_window()
 
+        # Status of the find_candidates thread
+        self.fc_running = 0
+
     def init_window(self):
         self.master.title(self.version)
         self.content.columnconfigure(1, minsize=50)
@@ -29,13 +32,13 @@ class DownloaderGUI(Frame):
 
         # List of terms neighboring the seed term that were found by the
         # driver
-        candidate_terms = Text(self.content, height=25, width=25)
-        candidate_terms.grid(column=0, row=2, padx=10, pady=10, rowspan=40,
+        self.candidate_terms = Text(self.content, height=25, width=25)
+        self.candidate_terms.grid(column=0, row=2, padx=10, pady=10, rowspan=40,
                 sticky=W)
 
         # COLUMN 1
         find_candidates_btn = Button(self.content, text="Find Candidates",
-                width=20, command=self.start_find_candidates)
+                width=20, command=self.control_find_candidates)
         find_candidates_btn.grid(column=1, row=1, padx=30, pady=10, sticky=NE)
 
         scrape_btn = Button(self.content, text="Scrape Images", width=20)
@@ -50,14 +53,20 @@ class DownloaderGUI(Frame):
         save_btn = Button(self.content, text="Save", width=20)
         save_btn.grid(column=1, row=7, padx=10, pady=5, sticky=N)
 
-    def start_find_candidates(self):
-        fc_thread = threading.Thread(target=self.find_candidates)
-        fc_thread.start()
+    def control_find_candidates(self):
+        if self.fc_running == 0:
+            fc_thread = threading.Thread(target=self.find_candidates)
+            fc_thread.start()
+            fc_running = 1
+        if self.fc_running == 1:
+            # TODO: pausing and stopping threads
+            pass
 
     def find_candidates(self):
         csg_root = Tk()
         app = csg.CandidateScraperGUI(csg_root)
         csg_root.mainloop()
+        self.candidate_terms.insert(END, app.candidates)
 
 """
 root = Tk()

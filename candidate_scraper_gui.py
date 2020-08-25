@@ -11,6 +11,9 @@ class CandidateScraperGUI(Frame):
         self.content = ttk.Frame(self.master)
         self.init_window()
 
+        # The list of candidate neighbors to be passed to DownloaderGUI
+        self.candidates = str()
+
     def init_window(self):
         self.master.title("Candidate Scraper Panel")
         self.content.grid(column=0, row=0)
@@ -79,8 +82,10 @@ class CandidateScraperGUI(Frame):
         self.get_values()
         self.wd = webdriver.Chrome(executable_path=self.driver_text)
 
-        scraper = cs.NeighborNodeFinder(self.query_text, self.wd, self.max_nodes_text,
-                self.max_layers_text)
+        scraper = cs.NeighborNodeFinder(self.query_text, self.wd, self.max_nodes_text, self.max_layers_text)
+        self.candidates = scraper.tmp_list
+        self.wd.quit()
+
 
 """
 root = Tk()

@@ -57,7 +57,26 @@ class NeighborNodeFinder:
 
         next_layer.add(self.query)
 
-        self.final_node_list = list(next_layer)
+        self.final_nodes_list = list(next_layer)
+        self.process_list()
+
+    # TODO: Have this method make decisions about the contents of the list,
+    # e.g., remove "clip art," "drawing," and "cartoon," from lists that have
+    # for some reason accumulated a large number of them.
+    def process_list(self):
+        self.save_list()
+        self.wd.close()
+
+    # TODO: Add options and an existence check for the save folder.
+    # TODO: Add in-code clarification that the save file her is a list of
+    # candidates that can be replaced by a DownloaderGUI object.
+    def save_list(self, target_path:str="./search_term_nodes"):
+        path = Path(target_path + "/" + self.query + ".csv")
+        self.tmp_list = str()
+        with open(path, "w+") as filehandle:
+            for node in self.final_nodes_list:
+                filehandle.write(node + "\n")
+                self.tmp_list += node + "\n"
 
 """
 wd = webdriver.Chrome(executable_path="./chromedriver")
