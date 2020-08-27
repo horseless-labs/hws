@@ -12,7 +12,7 @@ from pathlib import Path
 
 class ImageScraper:
     def __init__(self, search_list:list, target_path:str="./images",
-            number_images:int=1, urls_only:bool=False):
+            number_images:int=5, urls_only:bool=False):
         self.search_list = search_list
         self.target_path = target_path
         self.number_images = number_images
@@ -145,5 +145,7 @@ class ImageScraper:
         except Exception as e:
             print("Could not save {url} - {e}")
 
+"""
 search_terms = ["one", "two"]
 imgs = ImageScraper(search_terms)
+"""

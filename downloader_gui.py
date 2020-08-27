@@ -4,6 +4,7 @@ from tkinter import ttk
 import threading
 
 import candidate_scraper_gui as csg
+import image_scraper as imgx
 
 class DownloaderGUI(Frame):
     def __init__(self, master):
@@ -41,7 +42,8 @@ class DownloaderGUI(Frame):
                 width=20, command=self.control_find_candidates)
         find_candidates_btn.grid(column=1, row=1, padx=30, pady=10, sticky=NE)
 
-        scrape_btn = Button(self.content, text="Scrape Images", width=20)
+        scrape_btn = Button(self.content, text="Scrape Images", width=20,
+                command=self.scrape_images)
         scrape_btn.grid(column=1, row=4, padx=10, pady=5, sticky=N)
 
         pause_btn = Button(self.content, text="Pause", width=20)
@@ -69,7 +71,11 @@ class DownloaderGUI(Frame):
         self.candidate_terms.insert(END, app.candidates)
 
     def scrape_images(self):
-        pass
+        terms = self.candidate_terms.get("1.0", END)
+        terms = terms.split('\n')
+        terms.remove('')
+        print(terms)
+        scraper = imgx.ImageScraper(terms)
 
 """
 root = Tk()
