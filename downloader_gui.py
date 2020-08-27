@@ -68,6 +68,9 @@ class DownloaderGUI(Frame):
         csg_root.mainloop()
         self.candidate_terms.insert(END, app.candidates)
 
+    def scrape_images(self):
+        pass
+
 """
 root = Tk()
 app = DownloaderGUI(root)

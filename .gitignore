@@ -3,3 +3,5 @@
 chromedriver
 __pycache__/
 search_term_nodes
+blocked.csv
+images/
