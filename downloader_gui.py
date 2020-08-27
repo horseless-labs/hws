@@ -55,6 +55,7 @@ class DownloaderGUI(Frame):
         save_btn = Button(self.content, text="Save", width=20)
         save_btn.grid(column=1, row=7, padx=10, pady=5, sticky=N)
 
+    # TODO: clean up thread management overall
     def control_find_candidates(self):
         if self.fc_running == 0:
             fc_thread = threading.Thread(target=self.find_candidates)
@@ -64,16 +65,40 @@ class DownloaderGUI(Frame):
             # TODO: pausing and stopping threads
             pass
 
+    # Opens a separate window to find candidate nearest neighbor nodes.
     def find_candidates(self):
         csg_root = Tk()
         app = csg.CandidateScraperGUI(csg_root)
         csg_root.mainloop()
         self.candidate_terms.insert(END, app.candidates)
 
-    def scrape_images(self):
+    # TODO: blocked terms that remove unwanted queries from final results.
+    # Takes search terms from the Text box and returns a workable list of
+    # terms for sequential search and download.
+    def process_candidate_terms(self):
         terms = self.candidate_terms.get("1.0", END)
+        # Dividing by newline happens first.
         terms = terms.split('\n')
-        terms.remove('')
+
+        # Additionally separate by commas afterward
+        # TODO: more thorough sanitization of input; user has access to Text
+        # box.
+        terms = [i.split(',') for i in terms]
+        flat_terms = [i for sub in terms for i in sub]
+
+        # Remove emptry strings that keep coming up
+        final_terms = [i for i in flat_terms if i != '']
+        return final_terms
+
+    # TODO: Run on separate thread?
+    # TODO: Add mechanism to keep track of which terms have been downloaded
+    # in case of interruption.
+    # TODO: logging, statistics about downloads, candidates for sites to be
+    # added to block list.
+    # Opens web drivers in sequence to download images for search terms found
+    # in the Text box.
+    def scrape_images(self):
+        terms = self.process_candidate_terms()
         print(terms)
         scraper = imgx.ImageScraper(terms)
 
