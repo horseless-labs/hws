@@ -8,17 +8,19 @@ import time, os
 import re
 
 from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.firefox.options import Options
 from pathlib import Path
 
 class ImageScraper:
     def __init__(self, search_list:list, target_path:str="./images",
-            number_images:int=5, urls_only:bool=False):
+            number_images:int=100, urls_only:bool=False):
         self.search_list = search_list
         self.target_path = target_path
         self.number_images = number_images
         self.urls_only = urls_only
         
         self.driver_path = "./chromedriver"
+        #self.driver_path = "./geckodriver"
         self.search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img"
 
         self.load_block_list()
@@ -42,10 +44,10 @@ class ImageScraper:
             print("Is the file missing or in another directory")
             print("Proceeding with empty block list.")
 
-    def get_image_urls(self, query:str, max_links:str, wd:webdriver, spacer:int=5, log:bool=False):
+    def get_image_urls(self, query:str, max_links:str, wd:webdriver, spacer:int=10, log:bool=False):
         def scroll_to_bottom(wd):
             wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(spacer)
+            time.sleep(20)
 
         start_time = time.asctime()
         stop_time = str()
@@ -71,7 +73,6 @@ class ImageScraper:
                     continue
 
                 images = wd.find_elements_by_css_selector("img.n3VNCb")
-                print(len(images))
                 for image in images:
                     source = image.get_attribute("src")
 
@@ -91,10 +92,11 @@ class ImageScraper:
                 if image_count >= max_links:
                     print(f"Found {image_count} links.")
                     break
+                time.sleep(spacer)
 
             else:
                 print(f"Found {image_count} links. Still searching.")
-                time.sleep(20)
+                time.sleep(60)
 
                 try:
                     load_more = wd.find_element_by_css_selector(".sGx53d")
@@ -143,7 +145,7 @@ class ImageScraper:
                 image.save(f, "JPEG", quality=85)
             print(f"Success: saved {url} as {file_path}")
         except Exception as e:
-            print("Could not save {url} - {e}")
+            print(f"Could not save {url} - {e}")
 
 """
 search_terms = ["one", "two"]

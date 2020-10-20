@@ -15,6 +15,7 @@ class DownloaderGUI(Frame):
 
         # Status of the find_candidates thread
         self.fc_running = 0
+        self.scrape_running = 0
 
     def init_window(self):
         self.master.title(self.version)
@@ -43,7 +44,7 @@ class DownloaderGUI(Frame):
         find_candidates_btn.grid(column=1, row=1, padx=30, pady=10, sticky=NE)
 
         scrape_btn = Button(self.content, text="Scrape Images", width=20,
-                command=self.scrape_images)
+                command=self.control_scrape_images)
         scrape_btn.grid(column=1, row=4, padx=10, pady=5, sticky=N)
 
         pause_btn = Button(self.content, text="Pause", width=20)
@@ -90,6 +91,14 @@ class DownloaderGUI(Frame):
         final_terms = [i for i in flat_terms if i != '']
         return final_terms
 
+    def control_scrape_images(self):
+        if self.scrape_running == 0:
+            scrape_thread = threading.Thread(target=self.scrape_images)
+            scrape_thread.start()
+            self.scrape_running = 1
+        if self.scrape_running == 1:
+            pass
+
     # TODO: Run on separate thread?
     # TODO: Add mechanism to keep track of which terms have been downloaded
     # in case of interruption.
@@ -99,7 +108,6 @@ class DownloaderGUI(Frame):
     # in the Text box.
     def scrape_images(self):
         terms = self.process_candidate_terms()
-        print(terms)
         scraper = imgx.ImageScraper(terms)
 
 """
