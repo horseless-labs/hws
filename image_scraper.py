@@ -19,8 +19,7 @@ class ImageScraper:
         self.number_images = number_images
         self.urls_only = urls_only
         
-        self.driver_path = "./chromedriver"
-        #self.driver_path = "./geckodriver"
+        self.driver_path = "../chromedriver"
         self.search_url = "https://www.google.com/search?safe=off&site=&tbm=isch&source=hp&q={q}&oq={q}&gs_l=img"
 
         self.load_block_list()

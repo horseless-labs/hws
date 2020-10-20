@@ -7,3 +7,7 @@ Next steps for DownloaderGUI:
   * Change the target where images are to be saved
 * Add a separate method to process the list of search terms.
 * Remove the search seed: having a separate window to handle nearest neighbor discovery renders it redundant and weird.
+
+## 02020.10.20  
+Targets:  
+* Pause, Cancel, and Save buttons.

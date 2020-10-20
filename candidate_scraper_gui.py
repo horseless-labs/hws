@@ -34,7 +34,7 @@ class CandidateScraperGUI(Frame):
         
         # Entry widgets
         self.driver = ttk.Entry(self.content, justify=LEFT)
-        self.driver.insert(0, "./chromedriver")
+        self.driver.insert(0, "../chromedriver")
         self.driver.grid(column=1, row=0, padx=10, pady=8)
 
         self.seed_term = ttk.Entry(self.content, justify=LEFT)
