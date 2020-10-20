@@ -1,5 +1,6 @@
 # Change this later to only import the widgets needed from tkinter
 from tkinter import *
+from tkinter.filedialog import asksaveasfilename
 from tkinter import ttk
 import threading
 
@@ -53,7 +54,7 @@ class DownloaderGUI(Frame):
         cancel_btn = Button(self.content, text="Cancel", width=20)
         cancel_btn.grid(column=1, row=6, padx=10, pady=5, sticky=N)
 
-        save_btn = Button(self.content, text="Save", width=20)
+        save_btn = Button(self.content, text="Save", width=20, command=self.save_candidate_list)
         save_btn.grid(column=1, row=7, padx=10, pady=5, sticky=N)
 
     # TODO: clean up thread management overall
@@ -93,8 +94,8 @@ class DownloaderGUI(Frame):
 
     def control_scrape_images(self):
         if self.scrape_running == 0:
-            scrape_thread = threading.Thread(target=self.scrape_images)
-            scrape_thread.start()
+            self.scrape_thread = threading.Thread(target=self.scrape_images)
+            self.scrape_thread.start()
             self.scrape_running = 1
         if self.scrape_running == 1:
             pass
@@ -109,6 +110,21 @@ class DownloaderGUI(Frame):
     def scrape_images(self):
         terms = self.process_candidate_terms()
         scraper = imgx.ImageScraper(terms)
+
+    # Saves the list of filenames used.
+    def save_candidate_list(self):
+        terms = self.process_candidate_terms()
+        #filename = terms[0] + ".csv"
+        terms = ',\n'.join(terms)
+
+        filename = asksaveasfilename()
+        try:
+            with open(filename, 'w+') as f:
+                f.write(terms)
+                f.close()
+        except Exception as e: 
+            print("Could not write file.")
+            print(e)
 
 """
 root = Tk()
