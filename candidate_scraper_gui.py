@@ -6,7 +6,8 @@ from selenium import webdriver
 import candidate_scraper as cs
 
 class CandidateScraperGUI(Frame):
-    def __init__(self, master):
+    def __init__(self, master, q):
+        self.thread_queue = q
         self.master = master
         self.content = ttk.Frame(self.master)
         self.init_window()

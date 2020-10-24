@@ -3,12 +3,16 @@ from tkinter import *
 from tkinter.filedialog import asksaveasfilename
 from tkinter import ttk
 import threading
+import queue
 
 import candidate_scraper_gui as csg
 import image_scraper as imgx
 
 class DownloaderGUI(Frame):
-    def __init__(self, master):
+    def __init__(self, master, q):
+        #self.thread_queue = queue.Queue()
+        self.thread_queue = q
+
         self.master = master
         self.content = ttk.Frame(self.master)
         self.version = "hws-0.0"
@@ -16,7 +20,6 @@ class DownloaderGUI(Frame):
 
         # Status of the find_candidates thread
         self.fc_running = 0
-        self.scrape_running = 0
 
     def init_window(self):
         self.master.title(self.version)
@@ -59,18 +62,19 @@ class DownloaderGUI(Frame):
 
     # TODO: clean up thread management overall
     def control_find_candidates(self):
-        if self.fc_running == 0:
-            fc_thread = threading.Thread(target=self.find_candidates)
+        q = list(self.thread_queue.queue)
+        if q[-1] == "download_panel running":
+            fc_thread = threading.Thread(target=self.find_candidates,
+                    daemon=True)
+            self.thread_queue.put("find_candidates running")
             fc_thread.start()
-            fc_running = 1
-        if self.fc_running == 1:
-            # TODO: pausing and stopping threads
-            pass
+        elif q[-1] == "find_candidates running":
+            print("We already have one of these going")
 
     # Opens a separate window to find candidate nearest neighbor nodes.
     def find_candidates(self):
         csg_root = Tk()
-        app = csg.CandidateScraperGUI(csg_root)
+        app = csg.CandidateScraperGUI(csg_root, self.thread_queue)
         csg_root.mainloop()
         self.candidate_terms.insert(END, app.candidates)
 
@@ -93,12 +97,16 @@ class DownloaderGUI(Frame):
         return final_terms
 
     def control_scrape_images(self):
-        if self.scrape_running == 0:
-            self.scrape_thread = threading.Thread(target=self.scrape_images)
+        # Local list so as to prevent removal of elements from q
+        tmp_q = list(self.thread_queue.queue)
+        if tmp_q[-1] == "scraping images":
+            print("Already scraping images")
+
+        elif tmp_q[-1] == "download_panel running":
+            self.thread_queue.put("scraping images")
+            self.scrape_thread = threading.Thread(target=self.scrape_images,
+                    daemon=True)
             self.scrape_thread.start()
-            self.scrape_running = 1
-        if self.scrape_running == 1:
-            pass
 
     # TODO: Run on separate thread?
     # TODO: Add mechanism to keep track of which terms have been downloaded
