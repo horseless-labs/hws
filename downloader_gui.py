@@ -33,8 +33,8 @@ class DownloaderGUI(Frame):
 
         # User entry for the initial search term, whose neighbors will be
         # found by a driver on a separate thread.
-        search_seed = ttk.Entry(self.content, justify=LEFT)
-        search_seed.grid(column=0, row=1, padx=10, pady=5, sticky=W)
+        self.search_seed = ttk.Entry(self.content, justify=LEFT)
+        self.search_seed.grid(column=0, row=1, padx=10, pady=5, sticky=W)
 
         # List of terms neighboring the seed term that were found by the
         # driver
@@ -54,7 +54,7 @@ class DownloaderGUI(Frame):
         pause_btn = Button(self.content, text="Pause", width=20)
         pause_btn.grid(column=1, row=5, padx=10, pady=5, sticky=N)
 
-        cancel_btn = Button(self.content, text="Cancel", width=20)
+        cancel_btn = Button(self.content, text="Cancel", width=20, command=self.cancel_download)
         cancel_btn.grid(column=1, row=6, padx=10, pady=5, sticky=N)
 
         save_btn = Button(self.content, text="Save", width=20, command=self.save_candidate_list)
@@ -67,16 +67,18 @@ class DownloaderGUI(Frame):
             fc_thread = threading.Thread(target=self.find_candidates,
                     daemon=True)
             self.thread_queue.put("find_candidates running")
+            self.thread_queue.put(self.search_seed.get())
             fc_thread.start()
         elif q[-1] == "find_candidates running":
-            print("We already have one of these going")
+            print("find_candidates already running")
 
     # Opens a separate window to find candidate nearest neighbor nodes.
     def find_candidates(self):
         csg_root = Tk()
         app = csg.CandidateScraperGUI(csg_root, self.thread_queue)
         csg_root.mainloop()
-        self.candidate_terms.insert(END, app.candidates)
+        #self.candidate_terms.insert(END, app.candidates)
+        self.candidate_terms.insert(END, self.thread_queue.get())
 
     # TODO: blocked terms that remove unwanted queries from final results.
     # Takes search terms from the Text box and returns a workable list of
@@ -118,6 +120,7 @@ class DownloaderGUI(Frame):
     def scrape_images(self):
         terms = self.process_candidate_terms()
         scraper = imgx.ImageScraper(terms)
+        self.thread_queue.put("finished scraping images")
 
     # Saves the list of filenames used.
     def save_candidate_list(self):
@@ -133,6 +136,14 @@ class DownloaderGUI(Frame):
         except Exception as e: 
             print("Could not write file.")
             print(e)
+
+    def cancel_download(self):
+        q = list(self.thread_queue.queue)
+        if q[-1] == "scraping images":
+            self.scrape_thread.stop()
+            self.thread_queue.get()
+        else:
+            print("Images are not being scraped; nothing to cancel.")
 
 """
 root = Tk()

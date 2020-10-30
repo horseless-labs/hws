@@ -39,6 +39,7 @@ class CandidateScraperGUI(Frame):
         self.driver.grid(column=1, row=0, padx=10, pady=8)
 
         self.seed_term = ttk.Entry(self.content, justify=LEFT)
+        self.seed_term.insert(0, self.thread_queue.get())
         self.seed_term.grid(column=1, row=1, padx=10, pady=8)
 
         self.max_layers = ttk.Entry(self.content, justify=LEFT)
@@ -56,7 +57,7 @@ class CandidateScraperGUI(Frame):
         pause_btn = Button(self.content, text="Pause", width=15)
         pause_btn.grid(column=2, row=1, padx=10, pady=8)
 
-        cancel_btn = Button(self.content, text="Cancel", width=15)
+        cancel_btn = Button(self.content, text="Cancel", width=15, command=self.cancel)
         cancel_btn.grid(column=2, row=2, padx=10, pady=8)
 
     def get_values(self):
@@ -84,8 +85,19 @@ class CandidateScraperGUI(Frame):
         self.wd = webdriver.Chrome(executable_path=self.driver_text)
 
         scraper = cs.NeighborNodeFinder(self.query_text, self.wd, self.max_nodes_text, self.max_layers_text)
-        self.candidates = scraper.tmp_list
+        #self.candidates = scraper.tmp_list
+        self.thread_queue.put(scraper.tmp_list)
         self.wd.quit()
+
+    def cancel(self):
+        try:
+            print("Cancelling attempt to find candidate neighbors.")
+            print("No list has been generated.")
+            self.thread_queue.put("")
+            self.wd.quit()
+        except Exception as e:
+            print("No driver is currently running.")
+            self.thread_queue.put("")
 
 
 """

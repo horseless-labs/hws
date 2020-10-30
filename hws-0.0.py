@@ -13,13 +13,16 @@ import queue
 class ThreadManager:
     def __init__(self, master):
         self.master = master
-        self.queue = queue.Queue()
+        self.queue = queue.LifoQueue()
         self.dp_thread = threading.Thread(target=self.download_panel)
         self.dp_thread.start()
 
     def download_panel(self):
         gui = dg.DownloaderGUI(self.master, self.queue)
         self.queue.put("download_panel running")
+
+    def check_per_second(self):
+        pass
 
 root = Tk()
 tm = ThreadManager(root)

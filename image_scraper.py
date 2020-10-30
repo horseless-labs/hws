@@ -6,6 +6,7 @@ import requests
 import hashlib
 import time, os
 import re
+import threading
 
 from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.firefox.options import Options
@@ -14,6 +15,8 @@ from pathlib import Path
 class ImageScraper:
     def __init__(self, search_list:list, target_path:str="./images",
             number_images:int=100, urls_only:bool=False):
+        self._stop_event = threading.Event()
+
         self.search_list = search_list
         self.target_path = target_path
         self.number_images = number_images
@@ -145,6 +148,13 @@ class ImageScraper:
             print(f"Success: saved {url} as {file_path}")
         except Exception as e:
             print(f"Could not save {url} - {e}")
+
+    def stop(self):
+        self._stop_event.set()
+        exit()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
 """
 search_terms = ["one", "two"]
