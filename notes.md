@@ -11,3 +11,7 @@ Next steps for DownloaderGUI:
 ## 02020.10.20  
 Targets:  
 * Pause, Cancel, and Save buttons.
+
+## 02020.10.29  
+* Inter-thread messages need to be streamlined.
+* CandidateScraperGUI needs something to handle thread messages when it closes.
