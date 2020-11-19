@@ -131,7 +131,7 @@ class ImageScraper:
 
     def persist_image(self, folder_path:str, url:str):
         try:
-            image_content = requests.get(url, timeout=25.0).content
+            image_content = requests.get(url, timeout=15.0).content
         except Exception as e:
             print(f"Could not download {url} - {e}")
 
